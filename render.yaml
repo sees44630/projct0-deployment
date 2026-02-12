@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: otakuloot-api
+    env: node
+    plan: free
+    buildCommand: npm install && npx turbo build --filter=api
+    startCommand: node apps/api/dist/main
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+    autoDeploy: true
