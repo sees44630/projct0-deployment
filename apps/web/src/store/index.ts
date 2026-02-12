@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 import { STARTER_CHARACTERS, DEFAULT_CHARACTER } from '@/lib/characters';
 
 // ========================================
@@ -66,7 +67,9 @@ interface UIState {
   recordCartAdd: () => void;
 }
 
-export const useUIStore = create<UIState>((set, get) => ({
+export const useUIStore = create<UIState>()(
+  persist(
+    (set, get) => ({
   sidebarOpen: false,
   soundMuted: false,
   cursorMode: 'default',
@@ -148,7 +151,13 @@ export const useUIStore = create<UIState>((set, get) => ({
 
     return { fastAddCount: newCount, lastAddTimestamp: now };
   }),
-}));
+  }),
+  {
+    name: 'otakuloot-ui-storage',
+    storage: createJSONStorage(() => localStorage),
+    skipHydration: true,
+  }
+));
 
 // ========================================
 // Cart Store

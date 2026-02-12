@@ -15,6 +15,8 @@ const NAV_ITEMS = [
 
 export default function HUDSidebar() {
   const { sidebarOpen, setSidebarOpen, toggleSidebar } = useUIStore();
+  const level = useUIStore((s) => s.level);
+  const xp = useUIStore((s) => s.xp);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -130,13 +132,13 @@ export default function HUDSidebar() {
             {/* Footer — XP Bar */}
             <div className="p-6 bg-black/20 backdrop-blur-md relative z-10">
               <div className="flex justify-between text-[10px] font-stats text-cyber-blue mb-2 tracking-widest">
-                <span>{getLevelTitle(useUIStore.getState().level)}</span>
-                <span>{useUIStore.getState().xp % 500} / 500 XP</span>
+                <span>{getLevelTitle(level)}</span>
+                <span>{xp % 500} / 500 XP</span>
               </div>
               <div className="h-2 bg-void-black rounded-full overflow-hidden border border-white/10">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: `${(useUIStore.getState().xp % 500) / 5}%` }}
+                  animate={{ width: `${(xp % 500) / 5}%` }}
                   transition={{ duration: 1.5, delay: 0.5 }}
                   className="h-full rounded-full bg-gradient-to-r from-neon-pink via-purple-500 to-cyber-blue"
                   style={{ boxShadow: '0 0 10px rgba(255,45,123,0.5)' }}

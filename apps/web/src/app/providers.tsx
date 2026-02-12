@@ -12,6 +12,7 @@ import SoundManager from '@/components/SoundManager';
 import LevelUpOverlay from '@/components/LevelUpOverlay';
 import LiveTicker from '@/components/LiveTicker';
 import VisualNovelIntro from '@/components/VisualNovelIntro';
+import { useUIStore } from '@/store';
 
 export default function ClientProviders({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -35,6 +36,12 @@ export default function ClientProviders({ children }: { children: ReactNode }) {
     if (!introDone) {
       // eslint-disable-next-line react-hooks/exhaustive-deps -- check once on mount
       setShowIntro(true);
+    }
+    
+    // Manually trigger hydration for UI store (gamification)
+    const store = useUIStore as any;
+    if (store.persist && typeof store.persist.rehydrate === 'function') {
+      store.persist.rehydrate();
     }
   }, []);
 

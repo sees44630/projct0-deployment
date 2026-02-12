@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Inter, Orbitron } from "next/font/google";
 import "./globals.css";
 import ClientProviders from "./providers";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const outfit = Outfit({
   variable: "--font-heading",
@@ -38,7 +39,9 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${inter.variable} ${orbitron.variable} antialiased bg-void-black text-text-primary`}
       >
-        <ClientProviders>{children}</ClientProviders>
+        <ErrorBoundary>
+          <ClientProviders>{children}</ClientProviders>
+        </ErrorBoundary>
       </body>
     </html>
   );
