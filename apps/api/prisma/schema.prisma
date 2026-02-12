@@ -1,0 +1,129 @@
+// This is your Prisma schema file
+// Using PostgreSQL (Supabase/Neon)
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// Users & Profiles (The Player)
+// ========================================
+
+model User {
+  id           String     @id @default(uuid())
+  email        String     @unique
+  passwordHash String
+  role         String     @default("USER") // USER | ADMIN | VIP
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  profile      Profile?
+  cartItems    CartItem[]
+  orders       Order[]
+}
+
+model Profile {
+  id           String  @id @default(uuid())
+  userId       String  @unique
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  displayName  String
+  avatarUrl    String?
+  level        Int     @default(1)
+  xp           Int     @default(0)
+  currentTitle String  @default("Newbie Shopper")
+}
+
+// ========================================
+// Products (The Loot)
+// ========================================
+
+model Product {
+  id          String         @id @default(uuid())
+  title       String
+  slug        String         @unique
+  description String
+  price       Float
+  rarityTier  String         @default("COMMON") // COMMON | UNCOMMON | RARE | EPIC | LEGENDARY
+  categoryId  String?
+  category    Category?      @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  skus        SKU[]
+  assets      ProductAsset[]
+  stats       ProductStats?
+}
+
+model ProductStats {
+  id        String  @id @default(uuid())
+  productId String  @unique
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quality   Int     @default(50)
+  rarity    Int     @default(50)
+  comfort   Int     @default(50)
+  style     Int     @default(50)
+  value     Int     @default(50)
+}
+
+model SKU {
+  id            String  @id @default(uuid())
+  productId     String
+  product       Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  size          String?
+  color         String?
+  stockQuantity Int     @default(0)
+}
+
+model ProductAsset {
+  id        String  @id @default(uuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  type      String  @default("IMAGE") // IMAGE | MODEL_3D | VIDEO
+  url       String
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String
+  slug     String    @unique
+  products Product[]
+}
+
+// ========================================
+// Cart & Orders (The Transaction)
+// ========================================
+
+model CartItem {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  skuId     String?
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  userId    String
+  user      User        @relation(fields: [userId], references: [id])
+  total     Float
+  status    String      @default("PENDING") // PENDING | CONFIRMED | SHIPPED | DELIVERED | CANCELLED
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        String @id @default(uuid())
+  orderId   String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  skuId     String?
+  quantity  Int
+  price     Float
+}

@@ -1,0 +1,117 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthPayload {
+  accessToken: String!
+  user: UserType!
+}
+
+type CartItemType {
+  id: ID!
+  productId: String!
+  quantity: Int!
+  skuId: String
+}
+
+type CategoryType {
+  id: ID!
+  name: String!
+  slug: String!
+}
+
+type LevelProgress {
+  currentTitle: String!
+  level: Int!
+  progress: Float!
+  xp: Int!
+  xpForNextLevel: Int!
+  xpFromCurrentLevel: Int!
+  xpNeeded: Int!
+}
+
+type Mutation {
+  addToCart(productId: String!, quantity: Int! = 1, skuId: String): CartItemType!
+  awardXP(amount: Int!): XPResult!
+  clearCart: Boolean!
+  login(email: String!, password: String!): AuthPayload!
+  register(displayName: String!, email: String!, password: String!): AuthPayload!
+  removeFromCart(cartItemId: String!): CartItemType!
+  shopkeeperChat(context: String, message: String!): String!
+  shopkeeperReact(action: String!, playerClass: String, productName: String, rarity: String): String!
+}
+
+type ProductAssetType {
+  id: ID!
+  type: String!
+  url: String!
+}
+
+type ProductStatsType {
+  comfort: Int!
+  quality: Int!
+  rarity: Int!
+  style: Int!
+  value: Int!
+}
+
+type ProductType {
+  assets: [ProductAssetType!]!
+  category: CategoryType
+  description: String!
+  id: ID!
+  price: Float!
+  rarityTier: RarityTier!
+  skus: [SKUType!]!
+  slug: String!
+  stats: ProductStatsType
+  title: String!
+}
+
+type ProfileType {
+  avatarUrl: String
+  currentTitle: String!
+  displayName: String!
+  id: ID!
+  level: Int!
+  xp: Int!
+}
+
+type Query {
+  cart: [CartItemType!]!
+  categories: [CategoryType!]!
+  levelProgress: LevelProgress!
+  me: UserType
+  product(slug: String!): ProductType
+  products(category: String, rarityTier: RarityTier): [ProductType!]!
+  searchProducts(query: String!): [ProductType!]!
+}
+
+enum RarityTier {
+  COMMON
+  EPIC
+  LEGENDARY
+  RARE
+  UNCOMMON
+}
+
+type SKUType {
+  color: String
+  id: ID!
+  size: String
+  stockQuantity: Int!
+}
+
+type UserType {
+  email: String!
+  id: ID!
+  profile: ProfileType
+  role: String!
+}
+
+type XPResult {
+  leveledUp: Boolean!
+  newLevel: Int!
+  newTitle: String!
+  newXP: Int!
+}
