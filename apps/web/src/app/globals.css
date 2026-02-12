@@ -1,0 +1,577 @@
+@import "tailwindcss";
+
+/* ========================================
+   OTAKULOOT — Anime RPG Design System
+   ======================================== */
+
+@theme inline {
+  /* Core Palette */
+  --color-void-black: #0a0a0f;
+  --color-void-deep: #12121a;
+  --color-void-surface: #1a1a2e;
+  --color-void-elevated: #222240;
+
+  --color-neon-pink: #ff2d7b;
+  --color-neon-pink-glow: #ff2d7b66;
+  --color-cyber-blue: #00d4ff;
+  --color-cyber-blue-glow: #00d4ff55;
+  --color-sakura: #ffb7c5;
+  --color-gold-rank: #ffd700;
+  --color-gold-glow: #ffd70055;
+  --color-rare-purple: #b44dff;
+  --color-rare-glow: #b44dff55;
+  --color-epic-orange: #ff6a00;
+  --color-legendary-red: #ff0040;
+  --color-uncommon-green: #00ff88;
+  --color-common-gray: #8888aa;
+  --color-text-primary: #eef0ff;
+  --color-text-secondary: #9999bb;
+  --color-text-muted: #555577;
+
+  /* Fonts */
+  --font-heading: "Outfit", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-stats: "Orbitron", monospace;
+
+  /* Spacing */
+  --spacing-hud: 72px;
+
+  /* Rarity Glow Sizes */
+  --glow-sm: 0 0 8px;
+  --glow-md: 0 0 16px;
+  --glow-lg: 0 0 32px;
+}
+
+/* ========================================
+   Base Styles
+   (Fonts loaded via Next.js next/font/google)
+   ======================================== */
+* {
+  cursor: none !important;
+}
+
+:root {
+  --background: #0a0a0f;
+  --foreground: #eef0ff;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::selection {
+  background: var(--color-neon-pink);
+  color: var(--color-void-black);
+}
+
+/* ========================================
+   Scrollbar Styling
+   ======================================== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-void-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    var(--color-neon-pink),
+    var(--color-cyber-blue)
+  );
+  border-radius: 3px;
+}
+
+/* ========================================
+   Anime Utility Classes
+   ======================================== */
+.font-heading {
+  font-family: var(--font-heading);
+}
+.font-stats {
+  font-family: var(--font-stats);
+}
+
+/* Neon glow text */
+.text-glow-pink {
+  text-shadow:
+    0 0 10px var(--color-neon-pink),
+    0 0 30px var(--color-neon-pink-glow);
+}
+.text-glow-blue {
+  text-shadow:
+    0 0 10px var(--color-cyber-blue),
+    0 0 30px var(--color-cyber-blue-glow);
+}
+.text-glow-gold {
+  text-shadow:
+    0 0 10px var(--color-gold-rank),
+    0 0 30px var(--color-gold-glow);
+}
+
+/* Rarity borders */
+.border-rarity-common {
+  border-color: var(--color-common-gray);
+}
+.border-rarity-uncommon {
+  border-color: var(--color-uncommon-green);
+}
+.border-rarity-rare {
+  border-color: var(--color-cyber-blue);
+}
+.border-rarity-epic {
+  border-color: var(--color-rare-purple);
+}
+.border-rarity-legendary {
+  border-image: linear-gradient(
+      135deg,
+      var(--color-gold-rank),
+      var(--color-epic-orange),
+      var(--color-legendary-red)
+    )
+    1;
+}
+
+/* Glitch effect */
+@keyframes glitch {
+  0%,
+  100% {
+    transform: translate(0);
+  }
+  20% {
+    transform: translate(-2px, 2px);
+  }
+  40% {
+    transform: translate(2px, -2px);
+  }
+  60% {
+    transform: translate(-1px, -1px);
+  }
+  80% {
+    transform: translate(1px, 1px);
+  }
+}
+.glitch-hover:hover {
+  animation: glitch 0.3s ease-in-out;
+}
+
+/* Scan line overlay */
+.scanlines::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 50;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Pulse glow */
+@keyframes pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--color-neon-pink-glow);
+  }
+  50% {
+    box-shadow:
+      0 0 20px var(--color-neon-pink),
+      0 0 40px var(--color-neon-pink-glow);
+  }
+}
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Shimmer for loading */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-void-surface) 25%,
+    var(--color-void-elevated) 50%,
+    var(--color-void-surface) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Skewed card base */
+.skew-card {
+  transform: perspective(800px) rotateY(-2deg);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.skew-card:hover {
+  transform: perspective(800px) rotateY(0deg) scale(1.05);
+  z-index: 10;
+}
+
+/* HUD corner decorations */
+.hud-corner::before,
+.hud-corner::after {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-color: var(--color-cyber-blue);
+  pointer-events: none;
+}
+.hud-corner::before {
+  top: 0;
+  left: 0;
+  border-top: 2px solid;
+  border-left: 2px solid;
+}
+.hud-corner::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 2px solid;
+  border-right: 2px solid;
+}
+
+/* Marquee / Live Ticker */
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+}
+
+/* Energy bar fill */
+@keyframes energy-fill {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: var(--fill-percent, 100%);
+  }
+}
+
+/* Particle field background */
+.particle-bg {
+  background-image:
+    radial-gradient(
+      1px 1px at 10% 20%,
+      rgba(255, 45, 123, 0.4) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      1px 1px at 80% 30%,
+      rgba(0, 212, 255, 0.3) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      1px 1px at 50% 70%,
+      rgba(180, 77, 255, 0.3) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      1px 1px at 20% 80%,
+      rgba(255, 215, 0, 0.2) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      1px 1px at 90% 60%,
+      rgba(0, 255, 136, 0.2) 0%,
+      transparent 100%
+    );
+}
+
+/* ========================================
+   One Piece / Luffy — Gomu Gomu Interaction
+   ======================================== */
+.active-gomu:active {
+  animation: gomu-bounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes gomu-bounce {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.25, 0.75); } /* Squash */
+  40% { transform: scale(0.75, 1.25); } /* Stretch */
+  50% { transform: scale(1.15, 0.85); }
+  65% { transform: scale(0.95, 1.05); }
+  75% { transform: scale(1.05, 0.95); }
+  100% { transform: scale(1); }
+}
+
+/* ========================================
+   JJK — Cursed Energy
+   ======================================== */
+.cursed-energy {
+  position: relative;
+  overflow: hidden;
+}
+.cursed-energy::before {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    var(--color-void-black) 60deg,
+    var(--color-rare-purple) 120deg,
+    var(--color-cyber-blue) 180deg,
+    transparent 360deg
+  );
+  animation: cursed-spin 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: -1;
+  filter: blur(20px);
+}
+.cursed-energy:hover::before {
+  opacity: 0.6;
+}
+@keyframes cursed-spin {
+  from { transform: rotate(0deg) scale(1.5); }
+  to { transform: rotate(360deg) scale(1.5); }
+}
+
+/* ========================================
+   JoJo — Menacing Rumble
+   ======================================== */
+@keyframes menacing-rumble {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-1px, 1px) rotate(-1deg); }
+  50% { transform: translate(1px, -1px) rotate(1deg); }
+  75% { transform: translate(-1px, -1px) rotate(0deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+.animate-rumble {
+  animation: menacing-rumble 0.2s linear infinite;
+}
+
+/* ========================================
+   Naruto — Chakra Loading
+   ======================================== */
+@keyframes chakra-swirl {
+  0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+  70% { box-shadow: 0 0 0 20px rgba(0, 212, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
+}
+.chakra-loader {
+  animation: chakra-swirl 1.5s infinite;
+}
+
+/* ========================================
+   Soft Glass Theme — Elegant & Warm
+   Gentle translucent panels with soft
+   colour tints and delicate highlights
+   ======================================== */
+
+/* Standard glass — gentle frost, warm tint */
+.glass-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(30, 27, 45, 0.75),
+    rgba(20, 18, 35, 0.65)
+  );
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* Heavy glass — for overlays & sidebars, still soft */
+.glass-panel-heavy {
+  background: linear-gradient(
+    135deg,
+    rgba(22, 20, 38, 0.88),
+    rgba(15, 13, 28, 0.85)
+  );
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Light frosted panel — warmer, dreamier */
+.glass-panel-light {
+  background: linear-gradient(
+    135deg,
+    rgba(45, 40, 70, 0.6),
+    rgba(30, 25, 55, 0.5)
+  );
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Glass inner highlight — soft top edge shine */
+.glass-highlight::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.12),
+    transparent
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Animated soft gradient glow border */
+.glass-glow-border {
+  position: relative;
+}
+.glass-glow-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(180, 120, 255, 0.25),
+    rgba(100, 200, 255, 0.2),
+    rgba(255, 130, 180, 0.2),
+    rgba(100, 200, 255, 0.25)
+  );
+  background-size: 300% 300%;
+  animation: gradient-shift 8s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.7;
+}
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glass CTA button — soft and elegant */
+.glass-button {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.03)
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 2px 12px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.glass-button:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow:
+    0 4px 20px rgba(180, 120, 255, 0.12),
+    0 0 12px rgba(100, 200, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Decorative diamond angular panel clip */
+.glass-shard {
+  clip-path: polygon(
+    0 10px,
+    10px 0,
+    100% 0,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    0 100%
+  );
+}
+
+/* ========================================
+   Background Blob Animations
+   (Vivid flowing gradient orbs)
+   ======================================== */
+@keyframes blob-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -50px) scale(1.1); }
+  50% { transform: translate(-20px, 20px) scale(0.95); }
+  75% { transform: translate(50px, 30px) scale(1.05); }
+}
+@keyframes blob-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-40px, 30px) scale(1.08); }
+  66% { transform: translate(20px, -40px) scale(0.92); }
+}
+@keyframes blob-float-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  20% { transform: translate(60px, 20px) scale(1.15); }
+  40% { transform: translate(-30px, -30px) scale(0.9); }
+  60% { transform: translate(10px, 50px) scale(1.05); }
+  80% { transform: translate(-50px, 10px) scale(0.95); }
+}
+.blob-1 { animation: blob-float-1 12s ease-in-out infinite; }
+.blob-2 { animation: blob-float-2 15s ease-in-out infinite; }
+.blob-3 { animation: blob-float-3 18s ease-in-out infinite; }
+
+/* ========================================
+   Gradient Orb Effect (Reference Image 2)
+   ======================================== */
+@keyframes orb-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+.orb-pulse { animation: orb-pulse 4s ease-in-out infinite; }
+
+/* Text Selection (One Piece haki style) */
+::selection {
+  background: var(--color-void-black);
+  color: var(--color-neon-pink);
+  text-shadow: 0 0 8px var(--color-neon-pink);
+}
