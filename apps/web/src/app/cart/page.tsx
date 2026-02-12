@@ -9,15 +9,17 @@ import GachaLootReveal from '@/components/GachaLootReveal';
 import { triggerLevelUp } from '@/components/LevelUpOverlay';
 
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, clearCart, totalPrice } = useCartStore();
+  const items = useCartStore((s) => s.items);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const totalPrice = useCartStore((s) => s.totalPrice);
   const setShopkeeperMood = useUIStore((s) => s.setShopkeeperMood);
-  // Gamification Hooks
-  const { xp, level, addXp, addSpent } = useUIStore((s) => ({
-    xp: s.xp,
-    level: s.level,
-    addXp: s.addXp,
-    addSpent: s.addSpent
-  }));
+  // Gamification Hooks (atomic selectors to avoid re-render loops)
+  const xp = useUIStore((s) => s.xp);
+  const level = useUIStore((s) => s.level);
+  const addXp = useUIStore((s) => s.addXp);
+  const addSpent = useUIStore((s) => s.addSpent);
   
   const [showLootReveal, setShowLootReveal] = useState(false);
   const [checkoutItems, setCheckoutItems] = useState<Array<{ title: string; rarityTier: string; price: number }>>([]);

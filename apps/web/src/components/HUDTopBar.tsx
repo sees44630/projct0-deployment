@@ -4,7 +4,8 @@ import { useUIStore, useCartStore } from '@/store';
 import Link from 'next/link';
 
 export default function HUDTopBar() {
-  const { soundMuted, toggleSound } = useUIStore();
+  const soundMuted = useUIStore((s) => s.soundMuted);
+  const toggleSound = useUIStore((s) => s.toggleSound);
   const totalItems = useCartStore((s) => s.totalItems);
 
   const tickerMessages = [

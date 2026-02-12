@@ -36,18 +36,22 @@ export default function ShopkeeperAvatar() {
 
   // Greeting on mount (character-specific)
   useEffect(() => {
+    let innerTimer: ReturnType<typeof setTimeout>;
     const timer = setTimeout(() => {
       const greeting = getGreeting(activeShopkeeperId);
       setBubbleText(greeting);
       setShowBubble(true);
       setShopkeeperMood('greeting');
 
-      setTimeout(() => {
+      innerTimer = setTimeout(() => {
         setShowBubble(false);
         setShopkeeperMood('idle');
       }, 5000);
     }, 1500);
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(innerTimer);
+    };
   }, [setShopkeeperMood, activeShopkeeperId]);
 
   // React to mood changes from cart actions
@@ -68,7 +72,7 @@ export default function ShopkeeperAvatar() {
         clearTimeout(hideTimer);
       };
     }
-  }, [shopkeeperMessage, shopkeeperMood, setShopkeeperMood]);
+  }, [shopkeeperMessage, setShopkeeperMood]); // removed shopkeeperMood to break the dependency cycle
 
   // Build avatar content: character emoji + mood indicator
   const avatarContent = useMemo(() => {

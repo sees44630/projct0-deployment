@@ -5,13 +5,11 @@ import { useUIStore } from '@/store';
 import { CHARACTER_REGISTRY } from '@/lib/characters';
 
 export default function CharacterSelector() {
-  const {
-    characterSelectorOpen,
-    setCharacterSelectorOpen,
-    activeShopkeeperId,
-    setActiveShopkeeper,
-    unlockedShopkeepers,
-  } = useUIStore();
+  const characterSelectorOpen = useUIStore((s) => s.characterSelectorOpen);
+  const setCharacterSelectorOpen = useUIStore((s) => s.setCharacterSelectorOpen);
+  const activeShopkeeperId = useUIStore((s) => s.activeShopkeeperId);
+  const setActiveShopkeeper = useUIStore((s) => s.setActiveShopkeeper);
+  const unlockedShopkeepers = useUIStore((s) => s.unlockedShopkeepers);
 
   const characters = Object.values(CHARACTER_REGISTRY);
 
