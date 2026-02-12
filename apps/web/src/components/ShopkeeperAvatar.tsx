@@ -18,13 +18,11 @@ const MOOD_EMOJIS: Record<string, string> = {
 };
 
 export default function ShopkeeperAvatar() {
-  const {
-    shopkeeperMood,
-    shopkeeperMessage,
-    setShopkeeperMood,
-    activeShopkeeperId,
-    setCharacterSelectorOpen,
-  } = useUIStore();
+  const shopkeeperMood = useUIStore((s) => s.shopkeeperMood);
+  const shopkeeperMessage = useUIStore((s) => s.shopkeeperMessage);
+  const setShopkeeperMood = useUIStore((s) => s.setShopkeeperMood);
+  const activeShopkeeperId = useUIStore((s) => s.activeShopkeeperId);
+  const setCharacterSelectorOpen = useUIStore((s) => s.setCharacterSelectorOpen);
 
   const [showBubble, setShowBubble] = useState(false);
   const [bubbleText, setBubbleText] = useState('');

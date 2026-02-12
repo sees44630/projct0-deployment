@@ -14,7 +14,9 @@ const NAV_ITEMS = [
 ];
 
 export default function HUDSidebar() {
-  const { sidebarOpen, setSidebarOpen, toggleSidebar } = useUIStore();
+  const sidebarOpen = useUIStore((s) => s.sidebarOpen);
+  const setSidebarOpen = useUIStore((s) => s.setSidebarOpen);
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
   const level = useUIStore((s) => s.level);
   const xp = useUIStore((s) => s.xp);
   const sidebarRef = useRef<HTMLDivElement>(null);
