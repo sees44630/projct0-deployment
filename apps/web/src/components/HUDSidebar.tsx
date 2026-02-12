@@ -130,13 +130,13 @@ export default function HUDSidebar() {
             {/* Footer — XP Bar */}
             <div className="p-6 bg-black/20 backdrop-blur-md relative z-10">
               <div className="flex justify-between text-[10px] font-stats text-cyber-blue mb-2 tracking-widest">
-                <span>HUNTER RANK F</span>
-                <span>0 / 100 XP</span>
+                <span>{getLevelTitle(useUIStore.getState().level)}</span>
+                <span>{useUIStore.getState().xp % 500} / 500 XP</span>
               </div>
               <div className="h-2 bg-void-black rounded-full overflow-hidden border border-white/10">
                 <motion.div
                   initial={{ width: 0 }}
-                  animate={{ width: '15%' }}
+                  animate={{ width: `${(useUIStore.getState().xp % 500) / 5}%` }}
                   transition={{ duration: 1.5, delay: 0.5 }}
                   className="h-full rounded-full bg-gradient-to-r from-neon-pink via-purple-500 to-cyber-blue"
                   style={{ boxShadow: '0 0 10px rgba(255,45,123,0.5)' }}
@@ -149,3 +149,13 @@ export default function HUDSidebar() {
     </>
   );
 }
+
+// Helper for titles (duplicated to avoid circular deps if not in utils, but could be moved)
+const getLevelTitle = (lvl: number) => {
+  if (lvl === 1) return 'NOVICE COLLECTOR';
+  if (lvl === 2) return 'APPRENTICE COLLECTOR';
+  if (lvl === 3) return 'JOURNEYMAN OTAKU';
+  if (lvl === 4) return 'EXPERT WEEB';
+  if (lvl >= 5) return 'MASTER CURATOR';
+  return 'LEGENDARY COLLECTOR';
+};

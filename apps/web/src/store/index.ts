@@ -44,6 +44,13 @@ interface UIState {
   activeShopkeeperId: string;
   unlockedShopkeepers: string[];
   characterSelectorOpen: boolean;
+  // Gamification State
+  xp: number;
+  level: number;
+  totalSpent: number;
+  fastAddCount: number;
+  lastAddTimestamp: number;
+  
   toggleSidebar: () => void;
   setSidebarOpen: (open: boolean) => void;
   toggleSound: () => void;
@@ -52,9 +59,14 @@ interface UIState {
   setActiveShopkeeper: (id: string) => void;
   unlockShopkeeper: (id: string) => void;
   setCharacterSelectorOpen: (open: boolean) => void;
+  
+  // Gamification Actions
+  addXp: (amount: number) => void;
+  addSpent: (amount: number) => void;
+  recordCartAdd: () => void;
 }
 
-export const useUIStore = create<UIState>((set) => ({
+export const useUIStore = create<UIState>((set, get) => ({
   sidebarOpen: false,
   soundMuted: false,
   cursorMode: 'default',
@@ -63,6 +75,14 @@ export const useUIStore = create<UIState>((set) => ({
   activeShopkeeperId: DEFAULT_CHARACTER,
   unlockedShopkeepers: [...STARTER_CHARACTERS],
   characterSelectorOpen: false,
+  
+  // Initial Gamification State
+  xp: 0,
+  level: 1,
+  totalSpent: 0,
+  fastAddCount: 0,
+  lastAddTimestamp: 0,
+
   toggleSidebar: () => set((s) => ({ sidebarOpen: !s.sidebarOpen })),
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   toggleSound: () => set((s) => ({ soundMuted: !s.soundMuted })),
@@ -77,6 +97,57 @@ export const useUIStore = create<UIState>((set) => ({
         : [...s.unlockedShopkeepers, id],
     })),
   setCharacterSelectorOpen: (open) => set({ characterSelectorOpen: open }),
+
+  // Gamification Implementation
+  addXp: (amount) => set((s) => {
+    const newXp = s.xp + amount;
+    const newLevel = Math.floor(newXp / 500) + 1; // 500 XP per level
+    return { xp: newXp, level: newLevel };
+  }),
+
+  addSpent: (amount) => set((s) => {
+    const newTotal = s.totalSpent + amount;
+    // Check Gojo Unlock: Spend > 10,000
+    if (newTotal >= 10000 && !s.unlockedShopkeepers.includes('gojo')) {
+      return { 
+        totalSpent: newTotal,
+        unlockedShopkeepers: [...s.unlockedShopkeepers, 'gojo'],
+        shopkeeperMessage: "You've impressed the strongest sorcerer! Gojo Satoru is now unlocked! 👁️",
+        shopkeeperMood: 'excited'
+      };
+    }
+    return { totalSpent: newTotal };
+  }),
+
+  recordCartAdd: () => set((s) => {
+    const now = Date.now();
+    const timeDiff = now - s.lastAddTimestamp;
+    
+    // Reset if > 10 seconds since last add, otherwise increment
+    let newCount = (timeDiff > 10000) ? 1 : s.fastAddCount + 1;
+    
+    // Check Anya Unlock: 5 items in < 10 seconds (sequence)
+    // Note: The logic simplifies to "streak within window". 
+    // Strict interpretation: "5 items in under 10s" means the 5th item added is <= 10s from the 1st.
+    // Simplified trigger: If we hit count 5 and the gap between updates was small enough to sustain the streak.
+    
+    // Actually, let's just create a sliding window logic or simple timeout reset.
+    // If it's been > 2.5s (average budget per item for 10s total) since last click, maybe reset?
+    // Let's stick to the simple "streak within short bursts" logic.
+    if (timeDiff > 5000) newCount = 1; // Reset if > 5s idle
+    
+    if (newCount >= 5 && !s.unlockedShopkeepers.includes('anya')) {
+      return {
+        fastAddCount: newCount,
+        lastAddTimestamp: now,
+        unlockedShopkeepers: [...s.unlockedShopkeepers, 'anya'],
+        shopkeeperMessage: "Waku waku! You shop so fast! Anya Forger is now unlocked! 🥜",
+        shopkeeperMood: 'excited'
+      };
+    }
+
+    return { fastAddCount: newCount, lastAddTimestamp: now };
+  }),
 }));
 
 // ========================================

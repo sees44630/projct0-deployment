@@ -11,6 +11,14 @@ import { triggerLevelUp } from '@/components/LevelUpOverlay';
 export default function CartPage() {
   const { items, removeItem, updateQuantity, clearCart, totalPrice } = useCartStore();
   const setShopkeeperMood = useUIStore((s) => s.setShopkeeperMood);
+  // Gamification Hooks
+  const { xp, level, addXp, addSpent } = useUIStore((s) => ({
+    xp: s.xp,
+    level: s.level,
+    addXp: s.addXp,
+    addSpent: s.addSpent
+  }));
+  
   const [showLootReveal, setShowLootReveal] = useState(false);
   const [checkoutItems, setCheckoutItems] = useState<Array<{ title: string; rarityTier: string; price: number }>>([]);
 
@@ -36,16 +44,41 @@ export default function CartPage() {
     setShowLootReveal(false);
     setCheckoutItems([]);
 
-    // Award XP and trigger level up
+    // Calculate Rewards
+    const orderTotal = totalPrice();
     const xpEarned = items.length * 50;
-    triggerLevelUp({
-      newLevel: 2,
-      newTitle: 'Apprentice Collector',
-      xpGained: xpEarned,
-    });
+    
+    // Check for Level Up
+    const currentLevel = level;
+    const newTotalXp = xp + xpEarned;
+    const newLevel = Math.floor(newTotalXp / 500) + 1;
+    
+    // Apply Rewards
+    addXp(xpEarned);
+    addSpent(orderTotal);
+    
+    if (newLevel > currentLevel) {
+      triggerLevelUp({
+        newLevel: newLevel,
+        newTitle: getLevelTitle(newLevel),
+        xpGained: xpEarned,
+      });
+      setShopkeeperMood('excited', `🎉 LEVEL UP! You are now Level ${newLevel}! Keep it up, collector!`);
+    } else {
+      setShopkeeperMood('happy', `🎉 Loot claimed! You earned ${xpEarned} XP! Current Level: ${currentLevel}`);
+    }
 
     clearCart();
-    setShopkeeperMood('excited', `🎉 Loot claimed! You earned ${xpEarned} XP! Keep collecting, adventurer!`);
+  };
+
+  // Helper for titles
+  const getLevelTitle = (lvl: number) => {
+    if (lvl === 1) return 'Novice Collector';
+    if (lvl === 2) return 'Apprentice Collector';
+    if (lvl === 3) return 'Journeyman Otaku';
+    if (lvl === 4) return 'Expert Weeb';
+    if (lvl >= 5) return 'Master Curator';
+    return 'Legendary Collector';
   };
 
   if (items.length === 0 && !showLootReveal) {

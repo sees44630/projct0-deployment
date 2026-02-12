@@ -13,6 +13,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, index }: ProductCardProps) {
   const addItem = useCartStore((s) => s.addItem);
+  const recordCartAdd = useUIStore((s) => s.recordCartAdd);
   const { reactTo } = useShopkeeper();
   const color = RARITY_COLORS[product.rarityTier];
   const isLegendary = product.rarityTier === 'LEGENDARY';
@@ -22,6 +23,7 @@ export default function ProductCard({ product, index }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
+    recordCartAdd(); 
     reactTo('ADD_TO_CART', {
       productName: product.title,
       rarity: product.rarityTier,
